@@ -32,6 +32,9 @@
 </head>
 <body class="is-loading">
 
+  <!-- ═══ Animated background gradient mesh ═══ -->
+  <canvas id="bg-canvas" class="bg-canvas"></canvas>
+
   <!-- ═══ PRELOADER — Lusion-style giant counter + curtain ═══ -->
   <div class="preloader" id="preloader">
     <div class="preloader-counter" id="preloader-counter">0</div>
@@ -73,7 +76,28 @@
         </div>
         <div class="hero-visual reveal reveal-d2" data-parallax="0.08">
           <div class="phone-frame" id="phone-frame">
-            <div class="phone-notch"></div>
+            <!-- Side buttons -->
+            <div class="phone-btn-silent"></div>
+            <div class="phone-btn-vol-up"></div>
+            <div class="phone-btn-vol-down"></div>
+            <div class="phone-btn-power"></div>
+            <!-- Dynamic Island -->
+            <div class="phone-island"></div>
+            <!-- Status bar -->
+            <div class="phone-status">
+              <span class="phone-status-time">9:41</span>
+              <span class="phone-status-icons">
+                <!-- Signal -->
+                <svg width="15" height="10" viewBox="0 0 15 10"><rect x="0" y="6" width="2" height="4" rx="0.5" fill="var(--text)"/><rect x="3.5" y="4" width="2" height="6" rx="0.5" fill="var(--text)"/><rect x="7" y="2" width="2" height="8" rx="0.5" fill="var(--text)"/><rect x="10.5" y="0" width="2" height="10" rx="0.5" fill="var(--text)"/></svg>
+                <!-- WiFi -->
+                <svg width="12" height="10" viewBox="0 0 12 10"><path d="M6 8.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM6 5c1.7 0 3.2.7 4.3 1.8l-1.2 1.2A4.1 4.1 0 0 0 6 6.8c-1.1 0-2.2.4-3.1 1.2L1.7 6.8A6.1 6.1 0 0 1 6 5zm0-3.5c2.5 0 4.8 1 6.5 2.6L11.3 5.3A7.6 7.6 0 0 0 6 3a7.6 7.6 0 0 0-5.3 2.3L-.5 4.1A9.6 9.6 0 0 1 6 1.5z" fill="var(--text)"/></svg>
+                <!-- Battery -->
+                <svg width="22" height="10" viewBox="0 0 22 10"><rect x="0" y="1" width="19" height="8" rx="2" stroke="var(--text)" stroke-width="1" fill="none"/><rect x="1.5" y="2.5" width="14" height="5" rx="1" fill="var(--accent)"/><rect x="19.5" y="3" width="1.5" height="4" rx="0.5" fill="var(--text)"/></svg>
+              </span>
+            </div>
+            <!-- Glass reflection -->
+            <div class="phone-glare"></div>
+            <!-- Screen content -->
             <div class="phone-screen">
               <div class="ps-header">n<span>(</span>oted<span>)</span></div>
 
@@ -121,6 +145,8 @@
                 <div style="font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text)">2 330₽</div>
               </div>
             </div>
+            <!-- Home indicator -->
+            <div class="phone-home-bar"></div>
           </div>
         </div>
       </div>
@@ -138,13 +164,13 @@
         <span class="marquee-item"><span class="marquee-dot"></span>Подборки</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Beauty-профиль</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Коллекция</span>
-        <span class="marquee-item"><span class="marquee-dot"></span>Рулетка</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Wishlist</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Telegram</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Блогеры</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Подборки</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Beauty-профиль</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Коллекция</span>
-        <span class="marquee-item"><span class="marquee-dot"></span>Рулетка</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Wishlist</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Telegram</span>
         <span class="marquee-item"><span class="marquee-dot"></span>Блогеры</span>
       </div>
@@ -302,6 +328,7 @@
        2. INIT PAGE — runs after preloader done
        ════════════════════════════════════════ */
     function initPage() {
+      initBgCanvas();
       initTextSplit();
       initScrollReveal();
       initParallax();
@@ -311,6 +338,62 @@
       initMagnetic();
       initTilt();
       initSmoothScroll();
+    }
+
+    /* ════════════════════════════════════════
+       2b. ANIMATED BACKGROUND — floating gradient orbs
+       ════════════════════════════════════════ */
+    function initBgCanvas() {
+      var canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var w, h;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = document.documentElement.scrollHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Floating orbs
+      var orbs = [
+        { x: 0.15, y: 0.1, r: 350, color: [255, 79, 139], a: 0.06, sx: 0.0003, sy: 0.0002, ox: 0, oy: 0 },
+        { x: 0.85, y: 0.15, r: 300, color: [139, 92, 246], a: 0.05, sx: -0.0002, sy: 0.0003, ox: 2, oy: 1 },
+        { x: 0.5, y: 0.35, r: 400, color: [245, 197, 66], a: 0.03, sx: 0.0002, sy: -0.0001, ox: 4, oy: 3 },
+        { x: 0.2, y: 0.55, r: 280, color: [92, 196, 122], a: 0.03, sx: -0.0003, sy: 0.0002, ox: 1, oy: 5 },
+        { x: 0.75, y: 0.7, r: 320, color: [255, 79, 139], a: 0.04, sx: 0.0002, sy: 0.0003, ox: 3, oy: 2 },
+        { x: 0.4, y: 0.85, r: 260, color: [139, 92, 246], a: 0.04, sx: -0.0001, sy: -0.0002, ox: 5, oy: 4 },
+      ];
+
+      var t = 0;
+      function drawOrbs() {
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < orbs.length; i++) {
+          var o = orbs[i];
+          var cx = (o.x + Math.sin(t * o.sx * 1000 + o.ox) * 0.05) * w;
+          var cy = (o.y + Math.cos(t * o.sy * 1000 + o.oy) * 0.03) * h;
+          var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, o.r);
+          grad.addColorStop(0, 'rgba(' + o.color[0] + ',' + o.color[1] + ',' + o.color[2] + ',' + o.a + ')');
+          grad.addColorStop(1, 'rgba(' + o.color[0] + ',' + o.color[1] + ',' + o.color[2] + ',0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, o.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        t++;
+        requestAnimationFrame(drawOrbs);
+      }
+
+      if (!reduced) {
+        drawOrbs();
+        // Update canvas height on scroll (lazy)
+        var resizeTimer;
+        window.addEventListener('scroll', function () {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(resize, 200);
+        });
+      }
     }
 
     /* ════════════════════════════════════════

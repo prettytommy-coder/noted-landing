@@ -36,6 +36,16 @@ button { font: inherit; border: none; cursor: pointer; }
 /* ─── Utilities ─── */
 .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 20px; }
 
+/* ─── Animated background canvas ─── */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 /* ══════════════════════════════════════════════
    PRELOADER — Lusion-style giant counter + curtain
    ══════════════════════════════════════════════ */
@@ -364,7 +374,7 @@ body::after {
   100% { top: 100%; }
 }
 
-/* ── Hero glow orbs ── */
+/* ── Hero glow orbs (handled by bg-canvas now, kept for no-JS fallback) ── */
 .hero::before {
   content: '';
   position: absolute;
@@ -372,7 +382,7 @@ body::after {
   left: -15%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(255, 79, 139, .07) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(255, 79, 139, .05) 0%, transparent 65%);
   border-radius: 50%;
   pointer-events: none;
   z-index: -1;
@@ -384,46 +394,137 @@ body::after {
   right: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(245, 197, 66, .04) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(245, 197, 66, .03) 0%, transparent 65%);
   border-radius: 50%;
   pointer-events: none;
   z-index: -1;
 }
 
-/* ── Phone mockup ── */
+/* ── Phone mockup — realistic iPhone style ── */
 .hero-visual {
   display: flex;
   justify-content: center;
   will-change: transform;
-  perspective: 1000px;
+  perspective: 1200px;
 }
 .phone-frame {
   width: 260px;
-  height: 520px;
-  background: var(--card);
-  border-radius: 32px;
-  border: 2px solid var(--line);
+  height: 530px;
+  background: #0C0A0E;
+  border-radius: 40px;
+  border: 3px solid #2A2430;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, .6);
   will-change: transform;
   transition: transform .6s cubic-bezier(.22, 1, .36, 1), box-shadow .6s ease;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.05) inset,
+    0 30px 80px rgba(0, 0, 0, .7),
+    0 10px 30px rgba(0, 0, 0, .4);
 }
 .phone-frame:hover {
-  box-shadow: 0 30px 100px rgba(0, 0, 0, .6), 0 0 80px rgba(255, 79, 139, .1);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08) inset,
+    0 40px 100px rgba(0, 0, 0, .7),
+    0 0 60px rgba(255, 79, 139, .08);
 }
-.phone-notch {
-  width: 100px;
-  height: 24px;
-  background: var(--bg);
-  border-radius: 0 0 14px 14px;
-  margin: 0 auto;
+/* Side buttons */
+.phone-btn-silent {
+  position: absolute;
+  left: -4px;
+  top: 80px;
+  width: 3px;
+  height: 16px;
+  background: #2A2430;
+  border-radius: 2px 0 0 2px;
+}
+.phone-btn-vol-up {
+  position: absolute;
+  left: -4px;
+  top: 110px;
+  width: 3px;
+  height: 28px;
+  background: #2A2430;
+  border-radius: 2px 0 0 2px;
+}
+.phone-btn-vol-down {
+  position: absolute;
+  left: -4px;
+  top: 146px;
+  width: 3px;
+  height: 28px;
+  background: #2A2430;
+  border-radius: 2px 0 0 2px;
+}
+.phone-btn-power {
+  position: absolute;
+  right: -4px;
+  top: 120px;
+  width: 3px;
+  height: 36px;
+  background: #2A2430;
+  border-radius: 0 2px 2px 0;
+}
+/* Dynamic Island */
+.phone-island {
+  width: 76px;
+  height: 20px;
+  background: #000;
+  border-radius: 20px;
+  margin: 8px auto 0;
   position: relative;
-  z-index: 2;
+  z-index: 5;
+}
+/* Status bar */
+.phone-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 18px 2px;
+  position: relative;
+  z-index: 3;
+}
+.phone-status-time {
+  font-family: var(--body);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text);
+}
+.phone-status-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Glass glare / reflection */
+.phone-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 38px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.06) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(255,255,255,.02) 100%
+  );
+}
+/* Home indicator bar */
+.phone-home-bar {
+  width: 100px;
+  height: 4px;
+  background: rgba(245, 240, 242, .25);
+  border-radius: 4px;
+  margin: 6px auto 8px;
+  position: relative;
+  z-index: 3;
 }
 .phone-screen {
-  padding: 8px 14px;
+  padding: 4px 14px 0;
   font-size: 10px;
+  position: relative;
+  z-index: 2;
 }
 .phone-screen .ps-header {
   font-family: var(--mono);
@@ -731,7 +832,7 @@ body::after {
   .section { padding: 140px 0; }
 }
 @media (min-width: 1024px) {
-  .phone-frame { width: 280px; height: 560px; }
+  .phone-frame { width: 280px; height: 570px; }
 }
 
 /* ── Hide cursor on touch ── */
